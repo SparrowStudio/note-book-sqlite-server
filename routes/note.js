@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const SqliteDB = require("../db/index");
-// const util = require("util");
 
 /**
  * 获取笔记列表
@@ -35,6 +34,38 @@ router.get("/", async function(req, res, next) {
 	}
 });
 
+router.delete("/", async function(req, res) {
+	const { id } = req.query;
+	if (isNaN(id)) {
+		res.status(400).json({ error: "xxx" });
+		return;
+	}
+	const query = `DELETE FROM COMPANY WHERE id = ${id}`;
+	try {
+		const db = await SqliteDB.init();
+		const result = await db.run(query);
+		console.log(result);
+		res.json({ code: 0 });
+	} catch (error) {
+		res.status(400).json({ error: "xxx" });
+	}
+});
+
+router.put("/", async function(req, res) {
+	const { title, content, id } = req.body || {};
+	if (isNaN(id)) {
+		res.json({ error: "xxx" });
+		return;
+	}
+	try {
+		const db = await SqliteDB.init();
+		const result = await db.run("UPADATE note SET title = ? content = ? update_at = ? WHERE id = ?", [title, content, new Date(), id]);
+		console.log(result);
+	} catch (err) {
+		res.status(400).json({ error: "xxx" });
+	}
+});
+
 router.post("/", async function(req, res) {
 	const { title, content } = req.body || {};
 	if (!title || !content) {
@@ -43,9 +74,7 @@ router.post("/", async function(req, res) {
 	}
 	try {
 		const db = await SqliteDB.init();
-		console.log("content", content);
-		const result = await db.run("INSERT INTO note (title,content,created_at,updated_at) VALUES (?,?,?,?)", [title, content, new Date().valueOf(), new Date().valueOf()]);
-		console.log("db", result);
+		await db.run("INSERT INTO note (title,content,created_at,updated_at) VALUES (?,?,?,?)", [title, content, new Date().valueOf(), new Date().valueOf()]);
 		res.json(req.body);
 	} catch (error) {
 		res.status(400).json({ error: "xxx" });
