@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const SqliteDB = require("../db/index");
+const { cherry } = require("../utils");
 
 /**
  * 获取笔记列表
@@ -39,7 +40,7 @@ router.get("/", async function(req, res) {
  */
 router.delete("/", async function(req, res) {
 	const { id } = req.query;
-	if (isNaN(id)) {
+	if (isNaN(id - 0)) {
 		res.status(400).json({ error: "xxx" });
 		return;
 	}
@@ -59,7 +60,7 @@ router.delete("/", async function(req, res) {
  */
 router.put("/", async function(req, res) {
 	const { title, content, id } = req.body || {};
-	if (isNaN(id)) {
+	if (isNaN(id - 0)) {
 		res.json({ error: "xxx" });
 		return;
 	}
@@ -83,8 +84,9 @@ router.post("/", async function(req, res) {
 	}
 	try {
 		const db = await SqliteDB.init();
-		await db.run("INSERT INTO note (title,content,created_at,updated_at) VALUES (?,?,?,?)", [title, content, new Date().valueOf(), new Date().valueOf()]);
-		res.json(req.body);
+		const result = await db.run("INSERT INTO note (id,title,content,created_at,updated_at) VALUES (?,?,?,?,?)", [cherry.NextId(), title, content, new Date().valueOf(), new Date().valueOf()]);
+		console.log("insert ", result);
+		res.json(result);
 	} catch (error) {
 		res.status(400).json({ error: "xxx" });
 	}
