@@ -12,8 +12,7 @@ router.get("/", async (req, res) => {
 	}
 	try {
 		const db = await SqliteDB.init();
-		const result = await db.all(`SELECT * FROM note WHERE del_token = 1 LIMIT ${limit} OFFSET ${offset}`);
-		const { total } = await db.get("SELECT COUNT(*) AS total FROM note WHERE del_token = 1");
+		const [result, { total }] = await Promise.all([db.all(`SELECT * FROM note WHERE del_token = 1 LIMIT ${limit} OFFSET ${offset}`), db.get("SELECT COUNT(*) AS total FROM note WHERE del_token = 1")]);
 		res.json({ total, data: result });
 	} catch (error) {
 		res.json({ error: "xxx" });
@@ -31,7 +30,6 @@ router.put("/", async (req, res) => {
 	try {
 		const db = await SqliteDB.init();
 		await db.run(`UPDATE note SET del_token = 0 WHERE id = ${id}`);
-		// console.log(result);
 		res.json({ code: 0 });
 	} catch (error) {
 		res.json({ error: "xxx" });
