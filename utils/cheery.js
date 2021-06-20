@@ -1,22 +1,21 @@
 const CherryId = require("cherry-id");
 
 class GenId {
-	constructor(props = {}) {
-		if (this.instance) {
-			return this;
-		}
-		return GenId.init(props);
+	constructor(log) {
+		this.log = log;
 	}
 
-	static init(props) {
-		if (this.instance) {
-			return this;
+	static init(props = {}) {
+		if (!this.instance) {
+			console.log("xxx");
+			if (isNaN(props.WorkerId)) {
+				props.WorkerId = 1;
+			}
+			this.instance = new GenId(props.log || "");
+			this.cherry = new CherryId(props);
 		}
-		if (isNaN(props.WorkerId)) {
-			props.WorkerId = 1;
-		}
-		this.instance = new CherryId(props);
-		return this;
+
+		return this.instance;
 	}
 
 	/**
@@ -24,7 +23,7 @@ class GenId {
      * @returns {number} id
      */
 	id() {
-		return this.instance.NextId();
+		return this.cherry.NextId();
 	}
 }
 
