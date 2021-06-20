@@ -74,13 +74,29 @@ router.delete("/type", async (req, res) => {
 });
 
 /**
- * 获取tags个数
+ * 获取tags_type个数
  */
 router.get("/", async (req, res) => {
 	try {
 		const db = await SqliteDB.init();
-		const list = await db.all("SELECT name, COUNT(name) AS tatol FROM tags GROUP BY name");
-		res.json({ data: list });
+		const list = await db.all(`SELECT
+	tags_type.*,
+	COUNT( tags.name ) AS tatol 
+FROM
+	tags
+	CROSS JOIN tags_type 
+GROUP BY
+	tags.name 
+HAVING
+	COUNT( tags.name ) >= 0 
+ORDER BY
+	COUNT( tags.name );`);
+		const result = {};
+		list.forEach(value => {
+			const { name, ...other } = value;
+			result[name] = other;
+		});
+		res.json({ data: result });
 	} catch (error) {
 		console.log(error);
 		res.json({ error: "xxx" });
