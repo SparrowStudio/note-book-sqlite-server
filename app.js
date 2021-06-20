@@ -7,6 +7,7 @@ const usersRouter = require("./routes/users");
 const indexRouter = require("./routes/index");
 const noteRouter = require("./routes/note");
 const trashRouter = require("./routes/trash");
+const tagsRouter = require("./routes/tags");
 
 const app = express();
 app.all("*", function(req, res, next) {
@@ -32,5 +33,6 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/note", noteRouter);
 app.use("/trash", trashRouter);
+app.use("/tags", tagsRouter);
 
 module.exports = app;

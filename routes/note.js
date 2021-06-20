@@ -84,8 +84,9 @@ router.post("/", async function(req, res) {
 	}
 	try {
 		const db = await SqliteDB.init();
-		const id = cherry.NextId();
-		await db.run("INSERT INTO note (id,title,content,created_at,updated_at) VALUES (?,?,?,?,?)", [id, title, content, new Date().valueOf(), new Date().valueOf()]);
+		const id = cherry.id();
+		const time = new Date().valueOf();
+		await db.run("INSERT INTO note (id,title,content,created_at,updated_at) VALUES (?,?,?,?,?)", [id, title, content, time, time]);
 		console.log("insert ", id);
 		res.json({ id, ...req.body });
 	} catch (error) {
