@@ -7,9 +7,11 @@
     "dev": "nodemon ./bin/www"
   },
   "dependencies": {
+    "cherry-id": "^0.0.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "joi": "^17.4.0",
     "morgan": "~1.9.1",
     "sqlite": "^4.0.23",
     "sqlite3": "^5.0.2"
