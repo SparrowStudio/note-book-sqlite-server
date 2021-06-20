@@ -6,6 +6,8 @@ const logger = require("morgan");
 const usersRouter = require("./routes/users");
 const indexRouter = require("./routes/index");
 const noteRouter = require("./routes/note");
+const trashRouter = require("./routes/trash");
+
 const app = express();
 app.all("*", function(req, res, next) {
 	// 设置允许跨域的域名，*代表允许任意域名跨域
@@ -29,5 +31,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/note", noteRouter);
+app.use("/trash", trashRouter);
 
 module.exports = app;
