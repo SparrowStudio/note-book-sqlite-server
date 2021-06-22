@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS "main"."tags_type";
-CREATE TABLE "main"."tags_type" (
+CREATE TABLE IF NOT EXISTS "main"."tags_type" (
   "name" TEXT NOT NULL,
   "color" TEXT,
   "background" TEXT,

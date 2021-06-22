@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS "main"."tags";
-CREATE TABLE "main"."tags" (
+CREATE TABLE IF NOT EXISTS "main"."tags" (
   "id" INTEGER NOT NULL,
   "name" TEXT,
   "note_id" INTEGER,
