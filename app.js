@@ -3,14 +3,14 @@
  * @author: bubao
  * @Date: 2021-06-21 08:34:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 13:28:56
+ * @LastEditTime: 2022-01-23 13:37:47
  */
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const redis = require("./middleware/redis");
-const indexRouter = require("./routes/index");
+const redis = require("./src/middleware/redis");
+const indexRouter = require("./src/routes/index");
 // const usersRouter = require("./routes/users");
 // const noteRouter = require("./routes/note");
 // const trashRouter = require("./routes/trash");

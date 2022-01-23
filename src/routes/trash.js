@@ -1,6 +1,13 @@
+/**
+ * @Description:
+ * @author: bubao
+ * @Date: 2021-06-21 08:34:12
+ * @LastEditors: bubao
+ * @LastEditTime: 2022-01-23 13:38:02
+ */
 const express = require("express");
 const router = express.Router();
-const SqliteDB = require("../db/index");
+const SqliteDB = require("../../db/index");
 
 /**
  * 获取回收栏中的数据

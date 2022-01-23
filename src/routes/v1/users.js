@@ -3,14 +3,14 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 13:31:04
+ * @LastEditTime: 2022-01-23 13:37:55
  */
 
 const express = require("express");
 const router = express.Router();
-const { login } = require("./users.joi");
+const { login } = require("../../joi/users.joi");
 
-const { errcode } = require("../../utils/index");
+const { errcode } = require("../../../utils/index");
 /**
  * 登录
  */
