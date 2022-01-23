@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 12:09:38
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 16:00:02
+ * @LastEditTime: 2022-01-23 23:24:30
  */
 
 const ERRCODE = {
@@ -34,11 +34,18 @@ const ERRCODE = {
 			errcode: "41000",
 			errmsg: "邮箱或者密码错误"
 		}
+	},
+	50000: {
+		status: 500,
+		body: {
+			errcode: "50000",
+			errmsg: "服务端错误"
+		}
 	}
 };
 
 function errcode(code, res = {}) {
-	const errRes = ERRCODE[code];
+	const errRes = ERRCODE[code] || ERRCODE[50000];
 	errRes.body = { ...errRes.body, ...res };
 	return errRes;
 }

@@ -3,19 +3,15 @@
  * @author: bubao
  * @Date: 2021-06-21 08:34:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 15:30:26
+ * @LastEditTime: 2022-01-23 23:25:02
  */
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const redisMiddleware = require("./src/middleware/redis");
+const { errcode } = require("./utils/index");
 const authMiddleware = require("./src/middleware/auth");
 const indexRouter = require("./src/routes/index");
-// const usersRouter = require("./routes/users");
-// const noteRouter = require("./routes/note");
-// const trashRouter = require("./routes/trash");
-// const tagsRouter = require("./routes/tags");
 
 const app = express();
 app.all("*", function(req, res, next) {
@@ -31,18 +27,25 @@ app.all("*", function(req, res, next) {
 	} else { next(); }
 });
 app.use(logger("dev"));
-app.use(redisMiddleware());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(authMiddleware({
-	excludes: [{
-		method: "POST",
-		path: "/api/v1/users"
-	}]
-}));
-
+app.use(
+	authMiddleware({
+		excludes: [{
+			method: "POST",
+			path: "/api/v1/users"
+		}]
+	})
+);
 app.use("/", indexRouter);
+app.use(function(err, req, res, next) {
+	// logic
+	console.log("报错了", err.message);
 
+	const error = errcode(err.message);
+	console.error("error", error);
+	res.status(error.status).send(error.body);
+});
 module.exports = app;
