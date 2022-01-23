@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2021-06-21 08:34:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 23:25:02
+ * @LastEditTime: 2022-01-23 23:32:00
  */
 const express = require("express");
 const path = require("path");
@@ -40,7 +40,9 @@ app.use(
 	})
 );
 app.use("/", indexRouter);
-app.use(function(err, req, res, next) {
+
+// info 错误捕捉
+app.use(function ErrorHandler(err, req, res, next) {
 	// logic
 	console.log("报错了", err.message);
 

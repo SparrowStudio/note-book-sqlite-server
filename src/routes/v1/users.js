@@ -3,15 +3,19 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 23:25:33
+ * @LastEditTime: 2022-01-23 23:32:58
  */
-
 const express = require("express");
+const router = express.Router();
+
+// info 数据库单例
 const prisma = require("../../db/prisma").init();
 const redis = require("../../db/redis").init();
-const router = express.Router();
-const { login } = require("../../joi/users.joi");
 
+// info 数据校验
+const { login } = require("../../joi/v1/users.joi");
+
+// info 通用方法
 const { errcode, md5Slat, generateToken } = require("../../../utils/index");
 /**
  * 登录
@@ -35,7 +39,7 @@ router.post("/", async function(req, res, next) {
 				email,
 				password: md5Slat(password)
 			},
-			select1: {
+			select: {
 				id: true,
 				name: true,
 				email: true,
