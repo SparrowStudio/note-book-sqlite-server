@@ -17,9 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "morgan": "~1.9.1",
-    "path-to-regexp": "^6.2.0",
-    "sqlite": "^4.0.23",
-    "sqlite3": "^5.0.2"
+    "path-to-regexp": "^6.2.0"
   },
   "husky": {
     "hooks": {
@@ -50,5 +48,6 @@
     "url": "https://github.com/SparrowStudio/note-book-sqlite-server/issues"
   },
   "homepage": "https://github.com/SparrowStudio/note-book-sqlite-server#readme",
+  "keywords": [],
   "description": ""
 }

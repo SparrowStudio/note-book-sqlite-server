@@ -1,3 +1,10 @@
+/**
+ * @Description:
+ * @author: bubao
+ * @Date: 2021-06-21 08:34:12
+ * @LastEditors: bubao
+ * @LastEditTime: 2022-01-24 00:08:12
+ */
 const CherryId = require("cherry-id");
 
 class GenId {
@@ -7,7 +14,6 @@ class GenId {
 
 	static init(props = {}) {
 		if (!this.instance) {
-			console.log("xxx");
 			if (isNaN(props.WorkerId)) {
 				props.WorkerId = 1;
 			}
