@@ -3,6 +3,6 @@ content-type: application/json; charset=utf-8
 Authorization: Bearer asfasfasfsdfsdfsf
 
 {
-	"email": "test@example.com",
-	"password": "1234567890abcdef"
+	"email": "example@test.com",
+	"password": "52d04dc20036dbd8"
 }

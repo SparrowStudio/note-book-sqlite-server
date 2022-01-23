@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 12:09:38
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 14:54:04
+ * @LastEditTime: 2022-01-23 16:00:02
  */
 
 const ERRCODE = {
@@ -26,6 +26,13 @@ const ERRCODE = {
 		body: {
 			errcode: "40003",
 			errmsg: "无效token"
+		}
+	},
+	41000: {
+		status: 400,
+		body: {
+			errcode: "41000",
+			errmsg: "邮箱或者密码错误"
 		}
 	}
 };
