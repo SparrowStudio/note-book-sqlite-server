@@ -1,7 +1,8 @@
 POST http://localhost:3000/api/v1/users
 content-type: application/json; charset=utf-8
+Authorization: Bearer asfasfasfsdfsdfsf
 
 {
 	"email": "test@example.com",
-	"1password": "1234567890abcdef"
+	"password": "1234567890abcdef"
 }

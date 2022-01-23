@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 13:37:55
+ * @LastEditTime: 2022-01-23 15:31:30
  */
 
 const express = require("express");
@@ -22,8 +22,7 @@ router.post("/", async function(req, res) {
 	} catch (err) {
 		console.log(err);
 		const { body, status } = errcode("40001", err);
-		res.send(body);
-		res.status = status;
+		res.status(status).send(body);
 		return;
 	}
 	res.send("respond with a resource");

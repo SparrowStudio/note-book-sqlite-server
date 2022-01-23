@@ -3,13 +3,14 @@
  * @author: bubao
  * @Date: 2021-06-21 08:34:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 13:37:47
+ * @LastEditTime: 2022-01-23 15:30:26
  */
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const redis = require("./src/middleware/redis");
+const redisMiddleware = require("./src/middleware/redis");
+const authMiddleware = require("./src/middleware/auth");
 const indexRouter = require("./src/routes/index");
 // const usersRouter = require("./routes/users");
 // const noteRouter = require("./routes/note");
@@ -29,13 +30,18 @@ app.all("*", function(req, res, next) {
 		res.send(200);
 	} else { next(); }
 });
-
 app.use(logger("dev"));
-app.use(redis());
+app.use(redisMiddleware());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(authMiddleware({
+	excludes: [{
+		method: "POST",
+		path: "/api/v1/users"
+	}]
+}));
 
 app.use("/", indexRouter);
 

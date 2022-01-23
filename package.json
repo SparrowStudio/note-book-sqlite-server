@@ -14,8 +14,10 @@
     "express": "~4.16.4",
     "ioredis": "^4.28.3",
     "joi": "^17.5.0",
+    "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "morgan": "~1.9.1",
+    "path-to-regexp": "^6.2.0",
     "sqlite": "^4.0.23",
     "sqlite3": "^5.0.2"
   },
