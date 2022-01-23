@@ -1,13 +1,20 @@
+/**
+ * @Description:
+ * @author: bubao
+ * @Date: 2021-06-21 08:34:12
+ * @LastEditors: bubao
+ * @LastEditTime: 2022-01-23 13:28:56
+ */
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-
-const usersRouter = require("./routes/users");
+const redis = require("./middleware/redis");
 const indexRouter = require("./routes/index");
-const noteRouter = require("./routes/note");
-const trashRouter = require("./routes/trash");
-const tagsRouter = require("./routes/tags");
+// const usersRouter = require("./routes/users");
+// const noteRouter = require("./routes/note");
+// const trashRouter = require("./routes/trash");
+// const tagsRouter = require("./routes/tags");
 
 const app = express();
 app.all("*", function(req, res, next) {
@@ -24,15 +31,12 @@ app.all("*", function(req, res, next) {
 });
 
 app.use(logger("dev"));
+app.use(redis());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/note", noteRouter);
-app.use("/trash", trashRouter);
-app.use("/tags", tagsRouter);
 
 module.exports = app;

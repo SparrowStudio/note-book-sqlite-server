@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./db/dev.db"
+}
+
+model Users {
+	id String @id @default(uuid())
+	email String @unique
+	name String
+	create_time DateTime @default(now())
+	password String
+}
+
+model App {
+	id String @id @default(uuid())
+	workspace_id String
+	name String
+	description String
+	color Bytes
+	last_view_id String @default("")
+	modified_time DateTime
+	create_time DateTime @default(now())
+	user_id String
+	is_trash Boolean @default(false)
+}
+
+model Doc {
+	id String @id @default(uuid())
+	rev BigInt @default(0)
+}
+
+model Kv {
+	id String @id
+	blob Bytes
+}
+
+model Trash {
+	id String @id @default(uuid())
+	user_id String
+	ty Int @default(0)
+}
+
+model View {
+	id String @id @default(uuid())
+	belong String
+	name String
+	description String
+	modified_time DateTime
+	create_time DateTime @default(now())
+	thumbnail String
+	view_type Int
+}
+
+model Workspace {
+	id String @id @default(uuid())
+	name String
+	description String
+	modified_time DateTime
+	create_time DateTime @default(now())
+	user_id String
+}
