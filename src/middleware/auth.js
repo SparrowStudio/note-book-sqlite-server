@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 13:42:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-24 13:51:15
+ * @LastEditTime: 2022-01-24 22:42:28
  */
 const Path2Regexp = require("path-to-regexp");
 const { errcode, verifyToken } = require("../../utils/index");
@@ -26,7 +26,7 @@ function AuthenticationMiddleWare(pathObj = { }) {
 				pathExcludesMap[method][Path2Regexp.pathToRegexp(path)] = Path2Regexp.pathToRegexp(path);
 			})
 	;
-	const f = (req, res, next) => {
+	const f = async (req, res, next) => {
 		// 如果excludes为空
 		let needAuth = true;
 		if (!pathExcludesMap && !pathIncludesMap) {
@@ -54,7 +54,7 @@ function AuthenticationMiddleWare(pathObj = { }) {
 			if (Authorization) {
 				const token = Authorization.replace(/^Bearer /, "");
 				try {
-					const decodeToken = verifyToken(token);
+					const decodeToken = await verifyToken(token);
 					req.decodeToken = decodeToken;
 					next();
 				} catch (error) {
