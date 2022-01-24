@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 23:32:58
+ * @LastEditTime: 2022-01-24 14:01:57
  */
 const express = require("express");
 const router = express.Router();
@@ -57,14 +57,35 @@ router.post("/", async function(req, res, next) {
 		const refreshToken = generateToken(users, 24 * 60 * 60 * 1000);
 		await redis.set(`${users.id}#access_token`, accessToken, "Ex", 2 * 60 * 60);
 		await redis.set(`${users.id}#refresh_token`, refreshToken, "Ex", 24 * 60 * 60);
-		res.send({ ...users, accessToken, refreshToken });
+		const { status, body } = errcode(0, { ...users, accessToken, refreshToken });
+		res.status(status).send(body);
 	} catch (error) {
 		next(error);
 	}
 });
 
-router.get("/", function(req, res, next) {
-	res.send("respond with a resource");
+/**
+ * 获取token所属用户信息
+ */
+router.get("/me", async function(req, res, next) {
+	try {
+		const deToken = req.decodeToken;
+		const users = await prisma.users.findUnique({
+			where: {
+				id: deToken.id
+			},
+			select: {
+				id: true,
+				name: true,
+				create_time: true,
+				email: true
+			}
+		});
+		const { status, body } = errcode(0, { ...users });
+		res.status(status).send(body);
+	} catch (error) {
+		next(error);
+	}
 });
 
 module.exports = router;
