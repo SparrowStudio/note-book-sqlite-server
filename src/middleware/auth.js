@@ -3,11 +3,10 @@
  * @author: bubao
  * @Date: 2022-01-23 13:42:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-23 15:34:51
+ * @LastEditTime: 2022-01-24 13:51:15
  */
 const Path2Regexp = require("path-to-regexp");
-const { errcode } = require("../../utils/index");
-const jwt = require("jsonwebtoken");
+const { errcode, verifyToken } = require("../../utils/index");
 
 function AuthenticationMiddleWare(pathObj = { }) {
 	const includes = pathObj.includes;
@@ -55,7 +54,7 @@ function AuthenticationMiddleWare(pathObj = { }) {
 			if (Authorization) {
 				const token = Authorization.replace(/^Bearer /, "");
 				try {
-					const decodeToken = jwt.verify(token);
+					const decodeToken = verifyToken(token);
 					req.decodeToken = decodeToken;
 					next();
 				} catch (error) {

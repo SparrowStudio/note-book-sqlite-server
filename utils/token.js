@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 16:59:02
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-24 13:47:30
+ * @LastEditTime: 2022-01-24 13:53:33
  */
 const jwt = require("jsonwebtoken");
 const Redis = require("../src/db/redis");
@@ -24,12 +24,14 @@ async function verifyToken(token, type = 1) {
 	try {
 		res = jwt.verify(token, "token");
 	} catch (error) {
-		throw new Error(42000);
+		// info token超时或者无效token
+		throw new Error(40003);
 	}
 	const redis = Redis.init();
 	const redisToken = await redis.get(`${JSON.parse(res).id}#${type === 1 ? "access_token" : "refresh_token"}`);
 	if (redisToken !== token) {
-		throw new Error(42001);
+		// info 用户重新登录，旧token失效
+		throw new Error(40003);
 	}
 	return JSON.parse(res);
 }
