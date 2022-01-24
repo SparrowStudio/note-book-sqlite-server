@@ -3,11 +3,13 @@
  * @author: bubao
  * @Date: 2022-01-23 16:59:02
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-24 22:43:08
+ * @LastEditTime: 2022-01-25 01:15:59
  */
 const jwt = require("jsonwebtoken");
 const Redis = require("../src/db/redis");
 const dotFile = require("./dotFile");
+const MyError = require("./MyError");
+
 async function generateToken(paylod, expiresIn = 60 * 60 * 2) {
 	const { JWT_TOKEN } = await dotFile();
 	return jwt.sign(paylod, JWT_TOKEN, {
@@ -28,13 +30,13 @@ async function verifyToken(token, type = 1) {
 		res = jwt.verify(token, JWT_TOKEN);
 	} catch (error) {
 		// info token超时或者无效token
-		throw new Error(40003);
+		throw new MyError(40003);
 	}
 	const redis = Redis.init();
 	const redisToken = await redis.get(`${res.id}#${type === 1 ? "access_token" : "refresh_token"}`);
 	if (redisToken !== token) {
 		// info 用户重新登录，旧token失效
-		throw new Error(40003);
+		throw new MyError(40003);
 	}
 	return res;
 }

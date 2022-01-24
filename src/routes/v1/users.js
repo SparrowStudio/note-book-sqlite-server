@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-24 19:42:53
+ * @LastEditTime: 2022-01-25 01:15:00
  */
 const express = require("express");
 const router = express.Router();
@@ -12,62 +12,14 @@ const router = express.Router();
 const prisma = require("../../db/prisma").init();
 const redis = require("../../db/redis").init();
 
-// info 数据校验
-const { login } = require("../../joi/v1/users.joi");
-
 // info 通用方法
-const { errcode, md5Slat, generateToken } = require("../../../utils/index");
-/**
- * 登录
- */
-router.post("/", async function(req, res, next) {
-	// info 检验参数
-	try {
-		await login.validateAsync(req.body);
-	} catch (err) {
-		console.log(err);
-		const { body, status } = errcode("40001", err);
-		res.status(status).send(body);
-		return;
-	}
-	// info 查找用户
-	const { email, password } = req.body;
-	console.log("email", email, password);
-	try {
-		const users = await prisma.users.findFirst({
-			where: {
-				email,
-				password: await md5Slat(password)
-			},
-			select: {
-				id: true,
-				name: true,
-				email: true,
-				create_time: true
-			}
-		});
-		// info 账号或者密码错误
-		if (!users) {
-			const { status, body } = errcode(41000);
-			res.status(status).send(body);
-			return;
-		}
-		// info 生成 token
-		const accessToken = await generateToken(users);
-		const refreshToken = await generateToken(users, 24 * 60 * 60 * 1000);
-		await redis.set(`${users.id}#access_token`, accessToken, "Ex", 2 * 60 * 60);
-		await redis.set(`${users.id}#refresh_token`, refreshToken, "Ex", 24 * 60 * 60);
-		const { status, body } = errcode(0, { ...users, accessToken, refreshToken });
-		res.status(status).send(body);
-	} catch (error) {
-		next(error);
-	}
-});
+const { errcode, MyError } = require("../../../utils/index");
+const { update_user_info, update_user_email, update_user_password } = require("../../joi/v1/user.joi");
 
 /**
  * 获取token所属用户信息
  */
-router.get("/me", async function(req, res, next) {
+router.get("", async function(req, res, next) {
 	try {
 		const deToken = req.decodeToken;
 		const users = await prisma.users.findUnique({
@@ -82,7 +34,112 @@ router.get("/me", async function(req, res, next) {
 			}
 		});
 		if (!users) {
-			throw new Error(41001);
+			throw new MyError(41001);
+		}
+		const { status, body } = errcode(0, { ...users });
+		res.status(status).send(body);
+	} catch (error) {
+		next(error);
+	}
+});
+
+router.patch("/info", async function(req, res, next) {
+	try {
+		// info 检验参数
+		await update_user_info.validateAsync(req.body).catch(err => {
+			throw new MyError(40001, err);
+		});
+
+		const res = req.body;
+		const deToken = req.decodeToken;
+		const users = await prisma.users.update({
+			where: {
+				id: deToken.id
+			},
+			data: {
+				name: res.name
+			}
+		});
+		if (!users) {
+			throw new MyError(41001);
+		}
+		const { status, body } = errcode(0, { ...users });
+		res.status(status).send(body);
+	} catch (error) {
+		next(error);
+	}
+});
+
+router.patch("/email", async function(req, res, next) {
+	try {
+		// todo 加锁
+		// info 检验参数
+		await update_user_email.validateAsync(req.body).catch(err => {
+			throw new MyError(40001, err);
+		});
+
+		const { email, captcha } = req.body;
+		const deToken = req.decodeToken;
+		const redisData = await redis.get(`${deToken.id}#captcha#email`);
+		if (!redisData) {
+			throw new MyError(40000);
+		}
+		const [redisEmail, redisCaptcha] = redisData.split("?");
+		if (email !== redisEmail || redisCaptcha !== captcha) {
+			throw new MyError(40000);
+		}
+		await prisma.users.update({
+			where: {
+				id: deToken.id
+			},
+			data: {
+				email: res.email
+			}
+		});
+		const user = await prisma.users.findFirst({
+			where: {
+				id: deToken.id
+			},
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				create_time: true
+			}
+		});
+
+		const { status, body } = errcode(0, { ...user });
+		res.status(status).send(body);
+	} catch (error) {
+		next(error);
+	}
+});
+router.patch("/password", async function(req, res, next) {
+	// info 检验参数
+	// try {
+	// 	await update_user_password.validateAsync(req.body);
+	// } catch (err) {
+	// 	const { body, status } = errcode("40001", err);
+	// 	res.status(status).send(body);
+	// 	return;
+	// }
+	try {
+		await update_user_password.validateAsync(req.body).catch(err => {
+			throw new MyError(40001, err);
+		});
+
+		const res = req.body;
+		const deToken = req.decodeToken;
+		const users = await prisma.users.update({
+			where: {
+				id: deToken.id
+			},
+			data: {
+				name: res.name
+			}
+		});
+		if (!users) {
+			throw new MyError(41001);
 		}
 		const { status, body } = errcode(0, { ...users });
 		res.status(status).send(body);

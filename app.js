@@ -3,12 +3,13 @@
  * @author: bubao
  * @Date: 2021-06-21 08:34:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-24 00:07:51
+ * @LastEditTime: 2022-01-25 01:11:37
  */
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+require("./utils/MyError");
 const { errcode } = require("./utils/index");
 const authMiddleware = require("./src/middleware/auth");
 const indexRouter = require("./src/routes/index");
@@ -35,7 +36,7 @@ app.use(
 	authMiddleware({
 		excludes: [{
 			method: "POST",
-			path: "/api/v1/users"
+			path: "/api/v1/auth"
 		}]
 	})
 );
@@ -43,7 +44,7 @@ app.use("/", indexRouter);
 
 // info 错误捕捉
 app.use(function ErrorHandler(err, req, res, next) {
-	const error = errcode(err.message);
-	res.status(error.status).send(error.body);
+	const error = errcode(err.errcode);
+	res.status(error.status).send({ ...error.body, ...(err.body || {}) });
 });
 module.exports = app;

@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 12:09:38
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-24 17:05:33
+ * @LastEditTime: 2022-01-24 23:39:15
  */
 
 const ERRCODE = {
@@ -59,9 +59,12 @@ const ERRCODE = {
 };
 
 function errcode(code, res = {}) {
-	const errRes = ERRCODE[code] || ERRCODE[50000];
-	errRes.body = { ...errRes.body, ...res };
-	return errRes;
+	return {
+		...(ERRCODE[code] || ERRCODE[50000]),
+		body: {
+			...(ERRCODE[code] || ERRCODE[50000]).body, ...res
+		}
+	};
 }
 
 module.exports = errcode;

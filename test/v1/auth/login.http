@@ -1,4 +1,4 @@
-POST http://localhost:3000/api/v1/users
+POST http://localhost:3000/api/v1/auth
 content-type: application/json; charset=utf-8
 Authorization: Bearer asfasfasfsdfsdfsf
 
