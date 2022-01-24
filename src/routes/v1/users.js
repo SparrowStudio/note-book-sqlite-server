@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 01:15:00
+ * @LastEditTime: 2022-01-25 01:26:31
  */
 const express = require("express");
 const router = express.Router();
@@ -116,13 +116,6 @@ router.patch("/email", async function(req, res, next) {
 });
 router.patch("/password", async function(req, res, next) {
 	// info 检验参数
-	// try {
-	// 	await update_user_password.validateAsync(req.body);
-	// } catch (err) {
-	// 	const { body, status } = errcode("40001", err);
-	// 	res.status(status).send(body);
-	// 	return;
-	// }
 	try {
 		await update_user_password.validateAsync(req.body).catch(err => {
 			throw new MyError(40001, err);
@@ -138,9 +131,6 @@ router.patch("/password", async function(req, res, next) {
 				name: res.name
 			}
 		});
-		if (!users) {
-			throw new MyError(41001);
-		}
 		const { status, body } = errcode(0, { ...users });
 		res.status(status).send(body);
 	} catch (error) {

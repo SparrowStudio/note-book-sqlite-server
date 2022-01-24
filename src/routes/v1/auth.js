@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-24 23:06:36
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 01:19:06
+ * @LastEditTime: 2022-01-25 01:24:27
  */
 const express = require("express");
 const router = express.Router();
@@ -22,22 +22,14 @@ const { errcode, md5Slat, generateToken, MyError } = require("../../../utils/ind
  * 登录
  */
 router.post("", async function(req, res, next) {
-	// info 检验参数
-	// try {
-	// 	await login.validateAsync(req.body);
-	// } catch (err) {
-	// 	console.log(err);
-	// 	const { body, status } = errcode("40001", err);
-	// 	res.status(status).send(body);
-	// 	return;
-	// }
-	// info 查找用户
 	try {
+		// info 检验参数
 		await login.validateAsync(req.body).catch(err => {
 			throw new MyError(40001, err);
 		});
 		const { email, password } = req.body;
 
+		// info 查找用户
 		const users = await prisma.users.findFirst({
 			where: {
 				email,
