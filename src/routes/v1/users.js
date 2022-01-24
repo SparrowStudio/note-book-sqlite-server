@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-24 17:05:46
+ * @LastEditTime: 2022-01-24 19:42:53
  */
 const express = require("express");
 const router = express.Router();
@@ -37,7 +37,7 @@ router.post("/", async function(req, res, next) {
 		const users = await prisma.users.findFirst({
 			where: {
 				email,
-				password: md5Slat(password)
+				password: await md5Slat(password)
 			},
 			select: {
 				id: true,
@@ -53,8 +53,8 @@ router.post("/", async function(req, res, next) {
 			return;
 		}
 		// info 生成 token
-		const accessToken = generateToken(users);
-		const refreshToken = generateToken(users, 24 * 60 * 60 * 1000);
+		const accessToken = await generateToken(users);
+		const refreshToken = await generateToken(users, 24 * 60 * 60 * 1000);
 		await redis.set(`${users.id}#access_token`, accessToken, "Ex", 2 * 60 * 60);
 		await redis.set(`${users.id}#refresh_token`, refreshToken, "Ex", 24 * 60 * 60);
 		const { status, body } = errcode(0, { ...users, accessToken, refreshToken });

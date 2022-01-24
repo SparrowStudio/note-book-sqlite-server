@@ -3,12 +3,14 @@
  * @author: bubao
  * @Date: 2022-01-23 16:59:02
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-24 13:53:33
+ * @LastEditTime: 2022-01-24 19:43:44
  */
 const jwt = require("jsonwebtoken");
 const Redis = require("../src/db/redis");
-function generateToken(paylod, expiresIn = 60 * 60 * 2) {
-	return jwt.sign(paylod, "token", {
+const dotFile = require("./dotFile");
+async function generateToken(paylod, expiresIn = 60 * 60 * 2) {
+	const { JWT_TOKEN } = await dotFile();
+	return jwt.sign(paylod, JWT_TOKEN, {
 		expiresIn
 	});
 }
@@ -22,7 +24,8 @@ function generateToken(paylod, expiresIn = 60 * 60 * 2) {
 async function verifyToken(token, type = 1) {
 	let res;
 	try {
-		res = jwt.verify(token, "token");
+		const { JWT_TOKEN } = await dotFile();
+		res = jwt.verify(token, JWT_TOKEN);
 	} catch (error) {
 		// info token超时或者无效token
 		throw new Error(40003);
