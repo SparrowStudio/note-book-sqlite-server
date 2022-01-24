@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-24 14:01:57
+ * @LastEditTime: 2022-01-24 17:05:46
  */
 const express = require("express");
 const router = express.Router();
@@ -81,6 +81,9 @@ router.get("/me", async function(req, res, next) {
 				email: true
 			}
 		});
+		if (!users) {
+			throw new Error(41001);
+		}
 		const { status, body } = errcode(0, { ...users });
 		res.status(status).send(body);
 	} catch (error) {

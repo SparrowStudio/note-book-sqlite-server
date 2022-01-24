@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 12:09:38
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-24 14:00:13
+ * @LastEditTime: 2022-01-24 17:05:33
  */
 
 const ERRCODE = {
@@ -40,6 +40,13 @@ const ERRCODE = {
 		body: {
 			errcode: "41000",
 			errmsg: "邮箱或者密码错误"
+		}
+	},
+	41001: {
+		status: 400,
+		body: {
+			errcode: "41001",
+			errmsg: "用户不存在"
 		}
 	},
 	50000: {
