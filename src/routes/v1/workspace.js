@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-25 23:27:02
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-26 01:12:57
+ * @LastEditTime: 2022-01-26 02:37:39
  */
 const express = require("express");
 const router = express.Router();
@@ -18,11 +18,12 @@ const {
 	read_workspace,
 	create_workspace,
 	update_workspace,
-	delete_workspace
+	delete_workspace,
+	read_workspace_list
 } = require("../../joi/v1/workspace.joi");
 /**
- * 创建
- */
+  * 创建
+  */
 router.post("", async function(req, res, next) {
 	try {
 		await create_workspace.validateAsync(req.body).catch(err => {
@@ -61,8 +62,8 @@ router.post("", async function(req, res, next) {
 });
 
 /**
- * 更新
- */
+  * 更新
+  */
 router.patch("", async function(req, res, next) {
 	try {
 		await update_workspace.validateAsync(req.body).catch(err => {
@@ -105,8 +106,8 @@ router.patch("", async function(req, res, next) {
 	}
 });
 /**
- * 删除
- */
+  * 删除
+  */
 router.delete("", async (req, res, next) => {
 	try {
 		await delete_workspace.validateAsync(req.body).catch(err => {
@@ -134,8 +135,8 @@ router.delete("", async (req, res, next) => {
 });
 
 /**
- * 获取
- */
+  * 获取
+  */
 router.get("", async function(req, res, next) {
 	try {
 		await read_workspace.validateAsync(req.query).catch(err => {
@@ -154,6 +155,37 @@ router.get("", async function(req, res, next) {
 			throw new MyError(40006);
 		}
 		const { status, body } = errcode(0);
+		res.status(status).send(body);
+	} catch (error) {
+		next(error);
+	}
+});
+
+router.get("/list", async function(req, res, next) {
+	try {
+		const deToken = req.decodeToken;
+		const user_id = deToken.id;
+		const result = await read_workspace_list.validateAsync(req.query);
+		const { page, size } = result;
+		const [count, workspace] = await prisma.$transaction([
+			prisma.workspace.count({ where: { user_id } }),
+			prisma.workspace.findMany({
+				where: {
+					user_id
+				},
+				// select: {
+				// 	_count: {
+				// 		select: { id: true }
+				// 	}
+				// },
+				// cursor: { user_id },
+				skip: page - 1,
+				take: size
+			})]);
+		if (!workspace) {
+			throw new MyError(40006);
+		}
+		const { status, body } = errcode(0, { count, workspace });
 		res.status(status).send(body);
 	} catch (error) {
 		next(error);
