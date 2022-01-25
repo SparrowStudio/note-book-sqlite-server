@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 10:50:04
+ * @LastEditTime: 2022-01-25 17:36:53
  */
 const express = require("express");
 const router = express.Router();
@@ -43,6 +43,9 @@ router.get("", async function(req, res, next) {
 	}
 });
 
+/**
+ * 更换用户基础信息
+ */
 router.patch("/info", async function(req, res, next) {
 	try {
 		// info 检验参数
@@ -52,7 +55,6 @@ router.patch("/info", async function(req, res, next) {
 
 		const { name } = req.body;
 		const deToken = req.decodeToken;
-		console.log("asas", name);
 		const users = await prisma.users.update({
 			where: {
 				id: deToken.id
@@ -78,6 +80,9 @@ router.patch("/info", async function(req, res, next) {
 	}
 });
 
+/**
+ *  更换邮箱
+ */
 router.patch("/email", async function(req, res, next) {
 	try {
 		// todo 加锁
@@ -113,6 +118,9 @@ router.patch("/email", async function(req, res, next) {
 		next(error);
 	}
 });
+/**
+ * 更换密码
+ */
 router.patch("/password", async function(req, res, next) {
 	// info 检验参数
 	try {

@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2021-06-21 08:34:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 10:45:28
+ * @LastEditTime: 2022-01-25 17:41:31
  */
 const express = require("express");
 const path = require("path");
@@ -29,6 +29,11 @@ app.all("*", function(req, res, next) {
 });
 app.use(logger("dev"));
 app.use(express.json());
+app.use(function ErrorHandler(err, req, res, next) {
+	// * json 解析错误
+	const error = errcode(40001);
+	res.status(error.status).send({ ...error.body, ...(err.name === "MyError" ? err.resBody : {}) });
+});
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
