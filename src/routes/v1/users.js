@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 17:36:53
+ * @LastEditTime: 2022-01-25 23:13:36
  */
 const express = require("express");
 const router = express.Router();
@@ -52,9 +52,14 @@ router.patch("/info", async function(req, res, next) {
 		await update_user_info.validateAsync(req.body).catch(err => {
 			throw new MyError(40001, err);
 		});
+		const deToken = req.decodeToken;
+		const redisLock = await redis.set(`update_user_info#${deToken.id}`, true, "Ex", 5, "Nx");
+
+		if (!redisLock) {
+			throw new Error(40003);
+		}
 
 		const { name } = req.body;
-		const deToken = req.decodeToken;
 		const users = await prisma.users.update({
 			where: {
 				id: deToken.id
@@ -72,6 +77,7 @@ router.patch("/info", async function(req, res, next) {
 		if (!users) {
 			throw new MyError(41001);
 		}
+		await redis.del(`update_user_info#${deToken.id}`);
 		const { status, body } = errcode(0, { ...users });
 		res.status(status).send(body);
 	} catch (error) {
@@ -85,7 +91,7 @@ router.patch("/info", async function(req, res, next) {
  */
 router.patch("/email", async function(req, res, next) {
 	try {
-		// todo 加锁
+		// * 加锁
 		// info 检验参数
 		await update_user_email.validateAsync(req.body).catch(err => {
 			throw new MyError(40001, err);
@@ -93,12 +99,18 @@ router.patch("/email", async function(req, res, next) {
 
 		const { email, captcha } = req.body;
 		const deToken = req.decodeToken;
+		const redisLock = await redis.set(`update_user_email#${deToken.id}`, true, "Ex", 5, "Nx");
+		if (!redisLock) {
+			throw new Error(40003);
+		}
 		const redisData = await redis.get(`${deToken.id}#captcha#email`);
 		if (!redisData) {
+			await redis.del(`update_user_email#${deToken.id}`);
 			throw new MyError(41002);
 		}
 		const [redisEmail, redisCaptcha] = redisData.split("?");
 		if (email !== redisEmail || redisCaptcha !== captcha) {
+			await redis.del(`update_user_email#${deToken.id}`);
 			throw new MyError(41002);
 		}
 		await prisma.users.update({
@@ -109,6 +121,7 @@ router.patch("/email", async function(req, res, next) {
 				email: res.email
 			}
 		});
+		await redis.del(`update_user_email#${deToken.id}`);
 
 		await redis.del(`${deToken.id}#refresh_token`);
 		await redis.del(`${deToken.id}#access_token`);
@@ -130,6 +143,10 @@ router.patch("/password", async function(req, res, next) {
 
 		const { password } = req.body;
 		const deToken = req.decodeToken;
+		const redisLock = await redis.set(`update_user_password#${deToken.id}`, true, "Ex", 5, "Nx");
+		if (!redisLock) {
+			throw new Error(40003);
+		}
 		await prisma.users.update({
 			where: {
 				id: deToken.id
@@ -140,6 +157,7 @@ router.patch("/password", async function(req, res, next) {
 		});
 		await redis.del(`${deToken.id}#refresh_token`);
 		await redis.del(`${deToken.id}#access_token`);
+		await redis.del(`update_user_password#${deToken.id}`);
 		const { status, body } = errcode(0);
 		res.status(status).send(body);
 	} catch (error) {
