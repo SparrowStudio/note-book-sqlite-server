@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 12:09:38
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 10:20:27
+ * @LastEditTime: 2022-01-25 22:08:21
  */
 
 const ERRCODE = {
@@ -54,6 +54,13 @@ const ERRCODE = {
 		body: {
 			errcode: "41002",
 			errmsg: "验证码错误"
+		}
+	},
+	41003: {
+		status: 400,
+		body: {
+			errcode: "41003",
+			errmsg: "邮箱已被注册"
 		}
 	},
 	50000: {

@@ -1,7 +1,8 @@
-PATCH http://localhost:3000/api/v1/users/info
+PATCH http://localhost:3000/api/v1/users/email
 content-type: application/json; charset=utf-8
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjllY2VhNTYwLThkMmItNDE4NC04OWVmLTY2NWY5ZWZjMjg1YSIsIm5hbWUiOiJidWJhbyIsImVtYWlsIjoiZXhhbXBsZUB0ZXN0LmNvbSIsImNyZWF0ZV90aW1lIjoiMjAyMi0wMS0yM1QwODoyNzoyMi4wMDBaIiwiaWF0IjoxNjQzMTE0MTg4LCJleHAiOjE2NDMxMjEzODh9.ECbedQ8Rcvb5Yl4xtxLVpgtlzQRqkb0aGRlx9JJtGoM
 
 {
-	"name": "bubao"
+	"email": "example@test.com",
+	"captcha": "123456"
 }
