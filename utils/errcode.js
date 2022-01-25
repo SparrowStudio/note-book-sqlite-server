@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 12:09:38
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 22:08:21
+ * @LastEditTime: 2022-01-25 22:41:06
  */
 
 const ERRCODE = {
@@ -33,6 +33,13 @@ const ERRCODE = {
 		body: {
 			errcode: "40003",
 			errmsg: "无效token"
+		}
+	},
+	40004: {
+		status: 400,
+		body: {
+			errcode: "40004",
+			errmsg: "请求太频繁，请稍后重试"
 		}
 	},
 	41000: {

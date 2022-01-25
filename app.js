@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2021-06-21 08:34:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 17:41:31
+ * @LastEditTime: 2022-01-25 22:37:30
  */
 const express = require("express");
 const path = require("path");
@@ -42,6 +42,9 @@ app.use(
 		excludes: [{
 			method: "POST",
 			path: "/api/v1/auth"
+		}, {
+			method: "POST",
+			path: "/api/v1/register"
 		}]
 	})
 );
