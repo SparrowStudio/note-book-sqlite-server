@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 10:25:51
+ * @LastEditTime: 2022-01-25 10:50:04
  */
 const express = require("express");
 const router = express.Router();
@@ -13,7 +13,7 @@ const prisma = require("../../db/prisma").init();
 const redis = require("../../db/redis").init();
 
 // info 通用方法
-const { errcode, MyError } = require("../../../utils/index");
+const { errcode, MyError, md5Slat } = require("../../../utils/index");
 const { update_user_info, update_user_email, update_user_password } = require("../../joi/v1/user.joi");
 
 /**
@@ -50,14 +50,21 @@ router.patch("/info", async function(req, res, next) {
 			throw new MyError(40001, err);
 		});
 
-		const res = req.body;
+		const { name } = req.body;
 		const deToken = req.decodeToken;
+		console.log("asas", name);
 		const users = await prisma.users.update({
 			where: {
 				id: deToken.id
 			},
 			data: {
-				name: res.name
+				name
+			},
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				create_time: true
 			}
 		});
 		if (!users) {
@@ -66,6 +73,7 @@ router.patch("/info", async function(req, res, next) {
 		const { status, body } = errcode(0, { ...users });
 		res.status(status).send(body);
 	} catch (error) {
+		console.log("error", error);
 		next(error);
 	}
 });
@@ -96,19 +104,10 @@ router.patch("/email", async function(req, res, next) {
 				email: res.email
 			}
 		});
-		const user = await prisma.users.findFirst({
-			where: {
-				id: deToken.id
-			},
-			select: {
-				id: true,
-				name: true,
-				email: true,
-				create_time: true
-			}
-		});
 
-		const { status, body } = errcode(0, { ...user });
+		await redis.del(`${deToken.id}#refresh_token`);
+		await redis.del(`${deToken.id}#access_token`);
+		const { status, body } = errcode(0);
 		res.status(status).send(body);
 	} catch (error) {
 		next(error);
@@ -121,25 +120,19 @@ router.patch("/password", async function(req, res, next) {
 			throw new MyError(40001, err);
 		});
 
-		const { password, captcha } = req.body;
+		const { password } = req.body;
 		const deToken = req.decodeToken;
-		const redisData = await redis.get(`${deToken.id}#captcha#password`);
-		if (!redisData) {
-			throw new MyError(41002);
-		}
-		const redisCaptcha = redisData;
-		if (redisCaptcha !== captcha) {
-			throw new MyError(41002);
-		}
-		const users = await prisma.users.update({
+		await prisma.users.update({
 			where: {
 				id: deToken.id
 			},
 			data: {
-				password
+				password: await md5Slat(password)
 			}
 		});
-		const { status, body } = errcode(0, { ...users });
+		await redis.del(`${deToken.id}#refresh_token`);
+		await redis.del(`${deToken.id}#access_token`);
+		const { status, body } = errcode(0);
 		res.status(status).send(body);
 	} catch (error) {
 		next(error);

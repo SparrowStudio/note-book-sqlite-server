@@ -3,12 +3,12 @@
  * @author: bubao
  * @Date: 2022-01-25 00:53:13
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 01:18:42
+ * @LastEditTime: 2022-01-25 10:44:27
  */
 function MyError(errcode = 50000, message = { }) {
 	this.name = "MyError";
 	this.errcode = errcode;
-	this.body = message;
+	this.resBody = message;
 	this.stack = (new Error()).stack;
 }
 MyError.prototype = Object.create(Error.prototype);
