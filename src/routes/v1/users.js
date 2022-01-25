@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 23:13:36
+ * @LastEditTime: 2022-01-26 00:05:11
  */
 const express = require("express");
 const router = express.Router();
@@ -56,7 +56,7 @@ router.patch("/info", async function(req, res, next) {
 		const redisLock = await redis.set(`update_user_info#${deToken.id}`, true, "Ex", 5, "Nx");
 
 		if (!redisLock) {
-			throw new Error(40003);
+			throw new MyError(40003);
 		}
 
 		const { name } = req.body;
@@ -101,7 +101,7 @@ router.patch("/email", async function(req, res, next) {
 		const deToken = req.decodeToken;
 		const redisLock = await redis.set(`update_user_email#${deToken.id}`, true, "Ex", 5, "Nx");
 		if (!redisLock) {
-			throw new Error(40003);
+			throw new MyError(40003);
 		}
 		const redisData = await redis.get(`${deToken.id}#captcha#email`);
 		if (!redisData) {
@@ -145,7 +145,7 @@ router.patch("/password", async function(req, res, next) {
 		const deToken = req.decodeToken;
 		const redisLock = await redis.set(`update_user_password#${deToken.id}`, true, "Ex", 5, "Nx");
 		if (!redisLock) {
-			throw new Error(40003);
+			throw new MyError(40003);
 		}
 		await prisma.users.update({
 			where: {
