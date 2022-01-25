@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-25 23:27:02
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-26 00:33:34
+ * @LastEditTime: 2022-01-26 01:12:57
  */
 const express = require("express");
 const router = express.Router();
@@ -14,7 +14,12 @@ const redis = require("../../db/redis").init();
 
 // info 通用方法
 const { errcode, MyError } = require("../../../utils/index");
-const { create_workspace, update_workspace } = require("../../joi/v1/workspace.joi");
+const {
+	read_workspace,
+	create_workspace,
+	update_workspace,
+	delete_workspace
+} = require("../../joi/v1/workspace.joi");
 /**
  * 创建
  */
@@ -90,10 +95,65 @@ router.patch("", async function(req, res, next) {
 			}
 		}).catch(async () => {
 			await redis.del(`${deToken.id}#update_workspace#${id}`);
-			throw new MyError(40001);
+			throw new MyError(40005);
 		});
 		await redis.del(`${deToken.id}#update_workspace#${id}`);
 		const { status, body } = errcode(0, { ...workspace });
+		res.status(status).send(body);
+	} catch (error) {
+		next(error);
+	}
+});
+/**
+ * 删除
+ */
+router.delete("", async (req, res, next) => {
+	try {
+		await delete_workspace.validateAsync(req.body).catch(err => {
+			throw new MyError(40001, err);
+		});
+		const deToken = req.decodeToken;
+		const user_id = deToken.id;
+		const { id } = req.body;
+		const redisLock = await redis.set(`${deToken.id}#delete_workspace#${id}`, true, "Ex", 5, "Nx");
+		if (!redisLock) {
+			throw new MyError(40003);
+		}
+		await prisma.workspace.delete({
+			where: {
+				id,
+				user_id
+			}
+		});
+		await redis.del(`${deToken.id}#delete_workspace#${id}`);
+		const { status, body } = errcode(0);
+		res.status(status).send(body);
+	} catch (error) {
+		next(error);
+	}
+});
+
+/**
+ * 获取
+ */
+router.get("", async function(req, res, next) {
+	try {
+		await read_workspace.validateAsync(req.query).catch(err => {
+			throw new MyError(40001, err);
+		});
+		const deToken = req.decodeToken;
+		const user_id = deToken.id;
+		const { id } = req.query;
+		const workspace = await prisma.workspace.findFirst({
+			where: {
+				id,
+				user_id
+			}
+		});
+		if (!workspace) {
+			throw new MyError(40006);
+		}
+		const { status, body } = errcode(0);
 		res.status(status).send(body);
 	} catch (error) {
 		next(error);

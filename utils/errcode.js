@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 12:09:38
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 22:41:06
+ * @LastEditTime: 2022-01-26 01:11:06
  */
 
 const ERRCODE = {
@@ -40,6 +40,20 @@ const ERRCODE = {
 		body: {
 			errcode: "40004",
 			errmsg: "请求太频繁，请稍后重试"
+		}
+	},
+	40005: {
+		status: 400,
+		body: {
+			errcode: "40005",
+			errmsg: "workspace更新失败，请稍后重试"
+		}
+	},
+	40006: {
+		status: 400,
+		body: {
+			errcode: "40006",
+			errmsg: "workspace不存在"
 		}
 	},
 	41000: {
