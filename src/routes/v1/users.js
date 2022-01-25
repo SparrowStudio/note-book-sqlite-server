@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 11:37:54
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 01:26:31
+ * @LastEditTime: 2022-01-25 10:25:51
  */
 const express = require("express");
 const router = express.Router();
@@ -82,11 +82,11 @@ router.patch("/email", async function(req, res, next) {
 		const deToken = req.decodeToken;
 		const redisData = await redis.get(`${deToken.id}#captcha#email`);
 		if (!redisData) {
-			throw new MyError(40000);
+			throw new MyError(41002);
 		}
 		const [redisEmail, redisCaptcha] = redisData.split("?");
 		if (email !== redisEmail || redisCaptcha !== captcha) {
-			throw new MyError(40000);
+			throw new MyError(41002);
 		}
 		await prisma.users.update({
 			where: {
@@ -121,14 +121,22 @@ router.patch("/password", async function(req, res, next) {
 			throw new MyError(40001, err);
 		});
 
-		const res = req.body;
+		const { password, captcha } = req.body;
 		const deToken = req.decodeToken;
+		const redisData = await redis.get(`${deToken.id}#captcha#password`);
+		if (!redisData) {
+			throw new MyError(41002);
+		}
+		const redisCaptcha = redisData;
+		if (redisCaptcha !== captcha) {
+			throw new MyError(41002);
+		}
 		const users = await prisma.users.update({
 			where: {
 				id: deToken.id
 			},
 			data: {
-				name: res.name
+				password
 			}
 		});
 		const { status, body } = errcode(0, { ...users });
