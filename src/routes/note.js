@@ -1,7 +1,14 @@
+/**
+ * @Description:
+ * @author: bubao
+ * @Date: 2022-01-23 13:40:09
+ * @LastEditors: bubao
+ * @LastEditTime: 2022-02-13 17:47:14
+ */
 const express = require("express");
 const router = express.Router();
-const SqliteDB = require("../db/index");
-const { cherry } = require("../utils");
+const SqliteDB = require("../../db/index");
+const { cherry } = require("../../utils");
 
 /**
  * 获取笔记列表
