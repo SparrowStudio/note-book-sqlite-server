@@ -1,0 +1,263 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/.prisma/generated/notion"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../db/notion.db"
+}
+
+model block {
+  id                         String
+  space_id                   String
+  version                    Float
+  last_version               Float?
+  type                       String
+  properties                 String?
+  content                    String?
+  discussions                String?
+  view_ids                   String?
+  collection_id              String?
+  permissions                String?
+  created_time               Float?
+  last_edited_time           Float?
+  copied_from                String?
+  file_ids                   String?
+  ignore_block_count         Int?
+  is_template                Int?
+  parent_id                  String?
+  parent_table               String?
+  alive                      Int
+  moved                      String?
+  format                     String?
+  created_by                 String?
+  last_edited_by             String?
+  created_by_table           String?
+  created_by_id              String?
+  last_edited_by_table       String?
+  last_edited_by_id          String?
+  content_classification     String?
+  meta_user_id               String
+  meta_last_access_timestamp Float
+  meta_role                  String?
+
+  @@id([id, meta_user_id])
+  @@index([meta_last_access_timestamp], map: "lru_deletion_order")
+  @@index([parent_id, meta_user_id], map: "block_parent_id")
+}
+
+model collection {
+  id             String
+  version        Float
+  last_version   Float?
+  name           String?
+  description    String?
+  icon           String?
+  cover          String?
+  schema         String?
+  format         String?
+  parent_id      String
+  parent_table   String
+  alive          Int
+  file_ids       String?
+  template_pages String?
+  copied_from    String?
+  migrated       Int?
+  space_id       String
+  deleted_schema String?
+  meta_user_id   String
+  meta_role      String
+
+  @@id([id, meta_user_id])
+}
+
+model collection_view {
+  id           String
+  version      Float
+  last_version Float?
+  type         String
+  name         String?
+  icon         String?
+  page_sort    String?
+  parent_id    String
+  parent_table String
+  alive        Int
+  format       String?
+  query2       String?
+  space_id     String
+  meta_user_id String
+  meta_role    String
+
+  @@id([id, meta_user_id])
+}
+
+model key_value_store {
+  id    Int     @id @default(autoincrement())
+  key   String? @unique(map: "sqlite_autoindex_key_value_store_1")
+  value String?
+}
+
+model notion {
+  id    Int              @id @default(autoincrement())
+  key   Unsupported("")? @unique(map: "sqlite_autoindex_notion_1")
+  value Unsupported("")?
+}
+
+model notion_user {
+  id                           String
+  version                      Float
+  last_version                 Float?
+  email                        String
+  given_name                   String?
+  family_name                  String?
+  name                         String?
+  profile_photo                String?
+  onboarding_completed         Int?
+  mobile_onboarding_completed  Int?
+  clipper_onboarding_completed Int?
+  reverify                     Int?
+  is_banned                    Int?
+  meta_user_id                 String
+  meta_role                    String
+
+  @@id([id, meta_user_id])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model records {
+  record_table String
+  record_id    String
+  record_value String?
+  timestamp    Decimal?
+  parent_table String?
+  parent_id    String?
+  importance   Decimal?
+  user_id      String
+  is_offline   Unsupported("")?
+  space_id     String?
+
+  @@id([record_table, record_id, user_id])
+  @@index([parent_id, user_id], map: "record_parent")
+  @@index([is_offline, importance, timestamp], map: "record_lru_deletion_order")
+  @@ignore
+}
+
+model space {
+  id                             String
+  version                        Float
+  last_version                   Float?
+  name                           String?
+  permissions                    String?
+  permission_groups              String?
+  email_domains                  String?
+  pages                          String?
+  icon                           String?
+  disable_public_access          Int?
+  disable_public_access_requests Int?
+  disable_guests                 Int?
+  disable_move_to_space          Int?
+  disable_export                 Int?
+  disable_space_page_edits       Int?
+  beta_enabled                   Int?
+  created_time                   Float?
+  last_edited_time               Float?
+  deleted_by                     String?
+  created_by_table               String?
+  created_by_id                  String?
+  last_edited_by_table           String?
+  last_edited_by_id              String?
+  admin_disable_public_access    Int?
+  space_pages                    String?
+  plan_type                      String?
+  invite_link_enabled            Int?
+  initial_use_cases              String?
+  public_home_page               String?
+  bot_settings                   String?
+  meta_user_id                   String
+  meta_role                      String?
+
+  @@id([id, meta_user_id])
+}
+
+model space_view {
+  id                           String
+  version                      Float
+  last_version                 Float?
+  space_id                     String
+  bookmarked_pages             String?
+  shared_pages                 String?
+  visited_templates            String?
+  sidebar_hidden_templates     String?
+  notify_mobile                Int
+  notify_desktop               Int
+  notify_email                 Int
+  notify_email_always          Int?
+  created_getting_started      Int?
+  parent_id                    String
+  parent_table                 String
+  alive                        Int
+  created_onboarding_templates Int?
+  private_pages                String?
+  joined                       Int?
+  joined_teams                 String?
+  meta_user_id                 String
+  meta_role                    String?
+  settings                     String?
+
+  @@id([id, meta_user_id])
+}
+
+model team {
+  id                   String
+  version              Float
+  last_version         Float?
+  space_id             String
+  name                 String
+  description          String?
+  icon                 String?
+  created_time         Float
+  created_by_table     String
+  created_by_id        String
+  last_edited_time     Float?
+  last_edited_by_table String?
+  last_edited_by_id    String?
+  archived_by          String?
+  team_pages           String?
+  parent_id            String
+  parent_table         String
+  settings             String?
+  is_default           Int?
+  membership           String?
+  permissions          String?
+  meta_user_id         String
+  meta_role            String?
+
+  @@id([id, meta_user_id])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model transactions {
+  id         String
+  user_id    String?
+  space_id   String?
+  operations String
+  timestamp  Float
+
+  @@index([user_id], map: "transactions_user_id")
+  @@ignore
+}
+
+model user_root {
+  id                  String
+  version             Float
+  space_views         String?
+  left_spaces         String?
+  space_view_pointers String?
+  deleted_email       String?
+  last_version        Float?
+  meta_user_id        String
+  meta_role           String
+
+  @@id([id, meta_user_id])
+}
