@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-25 23:27:02
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-26 02:37:39
+ * @LastEditTime: 2022-02-19 13:15:44
  */
 const express = require("express");
 const router = express.Router();
@@ -161,11 +161,11 @@ router.get("", async function(req, res, next) {
 	}
 });
 
-router.get("/list", async function(req, res, next) {
+router.get("/:user_id", async function(req, res, next) {
 	try {
 		const deToken = req.decodeToken;
 		const user_id = deToken.id;
-		const result = await read_workspace_list.validateAsync(req.query);
+		const result = await read_workspace_list.validateAsync(req.params);
 		const { page, size } = result;
 		const [count, workspace] = await prisma.$transaction([
 			prisma.workspace.count({ where: { user_id } }),

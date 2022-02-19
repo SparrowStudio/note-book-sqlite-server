@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-25 23:28:29
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-26 02:19:59
+ * @LastEditTime: 2022-02-19 13:15:29
  */
 const Joi = require("joi");
 
@@ -28,27 +28,28 @@ const read_workspace = Joi.object({
 	id: Joi.string().uuid()
 });
 const read_workspace_list = Joi.object({
-	page: Joi.string().allow("").default(1).custom((value, helpers) => {
-		console.log("value: " + value);
-		if (!value) {
-			return 1;
-		}
-		if (isNaN(value)) {
-			return helpers.error("any.invalid");
-		}
-		return value - 0;
-	}, "page must be a number"),
-	size: Joi.string().allow("").default(10).custom((value, helpers) => {
-		console.log("value: " + value);
+	// page: Joi.string().allow("").default(1).custom((value, helpers) => {
+	// 	console.log("value: " + value);
+	// 	if (!value) {
+	// 		return 1;
+	// 	}
+	// 	if (isNaN(value)) {
+	// 		return helpers.error("any.invalid");
+	// 	}
+	// 	return value - 0;
+	// }, "page must be a number"),
+	// size: Joi.string().allow("").default(10).custom((value, helpers) => {
+	// 	console.log("value: " + value);
 
-		if (!value) {
-			return 10;
-		}
-		if (isNaN(value)) {
-			return helpers.error("any.invalid");
-		}
-		return value - 0;
-	}, "size must be a number")
+	// 	if (!value) {
+	// 		return 10;
+	// 	}
+	// 	if (isNaN(value)) {
+	// 		return helpers.error("any.invalid");
+	// 	}
+	// 	return value - 0;
+	// }, "size must be a number")
+	user_id: Joi.string().required()
 });
 
 module.exports = {
