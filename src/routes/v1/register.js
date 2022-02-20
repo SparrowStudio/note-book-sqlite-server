@@ -3,13 +3,13 @@
  * @author: bubao
  * @Date: 2022-01-25 21:49:49
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 22:53:05
+ * @LastEditTime: 2022-02-20 15:51:04
  */
 const express = require("express");
 const router = express.Router();
 
 // info 数据库单例
-const prisma = require("../../db/prisma").init();
+const prisma = require("../../db/notion.prisma").init();
 const redis = require("../../db/redis").init();
 
 // info 通用方法
@@ -30,7 +30,7 @@ router.post("", async function(req, res, next) {
 			// 加锁失败
 			throw new MyError(40004);
 		}
-		const user = await prisma.users.findUnique({
+		const user = await prisma.notionUser.findUnique({
 			where: {
 				email: req.body.email
 			}

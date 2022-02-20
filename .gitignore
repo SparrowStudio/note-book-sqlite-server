@@ -177,3 +177,5 @@ db/database.db
 nopush
 *.db
 *.sqlite
+
+.prisma

@@ -9,7 +9,7 @@ const express = require("express");
 const router = express.Router();
 
 // info 数据库单例
-const prisma = require("../../db/prisma").init();
+const prisma = require("../../db/notion.prisma").init();
 const redis = require("../../db/redis").init();
 
 // info 数据校验

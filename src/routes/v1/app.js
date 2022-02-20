@@ -3,13 +3,13 @@
  * @author: bubao
  * @Date: 2022-02-19 12:57:26
  * @LastEditors: bubao
- * @LastEditTime: 2022-02-19 13:48:45
+ * @LastEditTime: 2022-02-20 15:10:07
  */
 const express = require("express");
 const router = express.Router();
 
 // info 数据库单例
-const prisma = require("../../db/prisma").init();
+const prisma = require("../../db/notion.prisma").init();
 const redis = require("../../db/redis").init();
 
 // info 通用方法

@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../../node_modules/.prisma/generated/notion"
+  output   = "../../.prisma/generated/notion"
 }
 
 datasource db {
@@ -45,6 +45,7 @@ model block {
   @@id([id, meta_user_id])
   @@index([meta_last_access_timestamp], map: "lru_deletion_order")
   @@index([parent_id, meta_user_id], map: "block_parent_id")
+//   @@map("block")
 }
 
 model collection {
@@ -70,9 +71,10 @@ model collection {
   meta_role      String
 
   @@id([id, meta_user_id])
+//   @@map("collection")
 }
 
-model collection_view {
+model collectionView {
   id           String
   version      Float
   last_version Float?
@@ -90,25 +92,29 @@ model collection_view {
   meta_role    String
 
   @@id([id, meta_user_id])
+  @@map("collection_view")
 }
 
-model key_value_store {
+model keyValueStore{
   id    Int     @id @default(autoincrement())
   key   String? @unique(map: "sqlite_autoindex_key_value_store_1")
   value String?
+  @@map("key_value_store")
 }
 
 model notion {
   id    Int              @id @default(autoincrement())
   key   Unsupported("")? @unique(map: "sqlite_autoindex_notion_1")
   value Unsupported("")?
+//   @@map("notion")
 }
 
-model notion_user {
+model notionUser {
   id                           String
   version                      Float
   last_version                 Float?
-  email                        String
+  email                        String @unique
+  password                     String?
   given_name                   String?
   family_name                  String?
   name                         String?
@@ -122,6 +128,7 @@ model notion_user {
   meta_role                    String
 
   @@id([id, meta_user_id])
+  @@map("notion_user")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -141,6 +148,7 @@ model records {
   @@index([parent_id, user_id], map: "record_parent")
   @@index([is_offline, importance, timestamp], map: "record_lru_deletion_order")
   @@ignore
+//   @@map("records")
 }
 
 model space {
@@ -178,9 +186,10 @@ model space {
   meta_role                      String?
 
   @@id([id, meta_user_id])
+//   @@map("space")
 }
 
-model space_view {
+model spaceView {
   id                           String
   version                      Float
   last_version                 Float?
@@ -206,6 +215,7 @@ model space_view {
   settings                     String?
 
   @@id([id, meta_user_id])
+  @@map("space_view")
 }
 
 model team {
@@ -234,11 +244,12 @@ model team {
   meta_role            String?
 
   @@id([id, meta_user_id])
+//   @@map("team")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model transactions {
-  id         String
+  id         String @id
   user_id    String?
   space_id   String?
   operations String
@@ -246,9 +257,10 @@ model transactions {
 
   @@index([user_id], map: "transactions_user_id")
   @@ignore
+//   @@map("transactions")
 }
 
-model user_root {
+model userRoot {
   id                  String
   version             Float
   space_views         String?
@@ -260,4 +272,5 @@ model user_root {
   meta_role           String
 
   @@id([id, meta_user_id])
+  @@map("user_root")
 }

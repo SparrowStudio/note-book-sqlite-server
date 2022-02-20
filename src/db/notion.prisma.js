@@ -3,10 +3,10 @@
  * @author: bubao
  * @Date: 2022-01-23 22:45:28
  * @LastEditors: bubao
- * @LastEditTime: 2022-02-20 03:23:46
+ * @LastEditTime: 2022-02-20 15:48:49
  */
 // eslint-disable-next-line node/no-unpublished-require
-const { PrismaClient } = require("../../node_modules/.prisma/generated/notion");
+const { PrismaClient } = require("../../.prisma/generated/notion");
 
 class Prisma {
 	constructor() {
