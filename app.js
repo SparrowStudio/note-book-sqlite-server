@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2021-06-21 08:34:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-02-13 18:35:35
+ * @LastEditTime: 2022-02-22 13:09:04
  */
 const express = require("express");
 const path = require("path");
@@ -50,6 +50,10 @@ app.use(
 );
 app.use("/", indexRouter);
 
+// info 404 错误捕捉
+app.use(function ErrorHandler(err, req, res, next) {
+	next(err || errcode(404).body);
+});
 // info 错误捕捉
 app.use(function ErrorHandler(err, req, res, next) {
 	const error = errcode(err.errcode);

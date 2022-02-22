@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-23 12:09:38
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-26 01:11:06
+ * @LastEditTime: 2022-02-22 13:08:30
  */
 
 const ERRCODE = {
@@ -12,6 +12,13 @@ const ERRCODE = {
 		body: {
 			errcode: "0",
 			errmsg: "ok"
+		}
+	},
+	404: {
+		status: 404,
+		body: {
+			errcode: "404",
+			errmsg: "404"
 		}
 	},
 	40001: {

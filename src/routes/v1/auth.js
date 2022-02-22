@@ -3,7 +3,7 @@
  * @author: bubao
  * @Date: 2022-01-24 23:06:36
  * @LastEditors: bubao
- * @LastEditTime: 2022-01-25 01:24:27
+ * @LastEditTime: 2022-02-22 14:30:01
  */
 const express = require("express");
 const router = express.Router();
@@ -30,7 +30,7 @@ router.post("", async function(req, res, next) {
 		const { email, password } = req.body;
 
 		// info 查找用户
-		const users = await prisma.users.findFirst({
+		const users = await prisma.notionUser.findFirst({
 			where: {
 				email,
 				password: await md5Slat(password)
