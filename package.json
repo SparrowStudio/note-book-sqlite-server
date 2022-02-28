@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "generate:notion": "npx prisma generate --schema ./prisma/notion/schema.prisma",
-    "dev": "npm run generate:notion && nodemon ./bin/www"
+    "start": "npm run pgs && node ./bin/www",
+    "pgs": "npx prisma generate --schema ./prisma/notion/schema.prisma",
+    "dev": "npm run pgs && nodemon ./bin/www"
   },
   "dependencies": {
     "@prisma/client": "3.9.2",
