@@ -10,4 +10,5 @@ const Path2Regexp = require("path-to-regexp");
 const url = require("url");
 const urlPath = "/abc/123";
 
-assert.equal(Path2Regexp.pathToRegexp(urlPath).test(url.parse("/abc/123?a=123").pathname), true);
+assert.equal(Path2Regexp.pathToRegexp(urlPath)
+	.test(url.parse("/abc/123?a=123").pathname), true);

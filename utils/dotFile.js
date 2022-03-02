@@ -23,13 +23,17 @@ async function ReadDotFile(force = false) {
 		return config;
 	}
 	const dotData = await ReadFilePromise(path.join(__dirname, "../.env"));
-	const item = dotData.toString().split("\n").filter((v, index) => {
-		return v.length;
-	});
+	const item = dotData.toString()
+		.split("\n")
+		.filter((v, index) => {
+			return v.length;
+		});
 	config = {};
 	console.log(item);
 	item.forEach((v, i) => {
-		const [key, value] = v.split("=").map(v => v.trim().replace(/"|'/g, ""));
+		const [key, value] = v.split("=")
+			.map(v => v.trim()
+				.replace(/"|'/g, ""));
 		config[key] = value;
 	});
 	console.log("config", config);

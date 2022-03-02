@@ -22,6 +22,23 @@
             "error",
             "double"
         ],
+		"comma-dangle": [
+			"error",
+			{
+				"arrays": "never",
+				"objects": "never",
+				"imports": "never",
+				"exports": "never",
+				"functions": "never"
+			}
+		],
+		"newline-per-chained-call": [
+			"error",
+			{
+				"ignoreChainWithDepth": 1
+			}
+		],
+		"array-bracket-spacing":["error", "never"],
         "node/no-missing-import": "off",
         "no-multiple-empty-lines": "error",
         "no-var": "error",

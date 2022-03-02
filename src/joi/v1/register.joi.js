@@ -8,14 +8,20 @@
 const Joi = require("joi");
 
 const register = Joi.object({
-	name: Joi.string().min(2).max(10).required(),
+	name: Joi.string()
+		.min(2)
+		.max(10)
+		.required(),
 	email: Joi.string()
 		.email({
 			// minDomainSegments: 2,
 			tlds: { allow: ["com", "net"] }
-		}).required(),
+		})
+		.required(),
 	password: Joi.string()
-		.length(16).alphanum().required()
+		.length(16)
+		.alphanum()
+		.required()
 });
 
 module.exports = {

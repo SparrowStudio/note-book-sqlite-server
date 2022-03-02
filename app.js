@@ -32,7 +32,8 @@ app.use(express.json());
 app.use(function ErrorHandler(err, req, res, next) {
 	// * json 解析错误
 	const error = errcode(40001);
-	res.status(error.status).send({ ...error.body, ...(err.name === "MyError" ? err.resBody : {}) });
+	res.status(error.status)
+		.send({ ...error.body, ...(err.name === "MyError" ? err.resBody : {}) });
 });
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -58,6 +59,7 @@ app.use(function ErrorHandler(err, req, res, next) {
 app.use(function ErrorHandler(err, req, res, next) {
 	const error = errcode(err.errcode);
 	console.log(err);
-	res.status(error.status).send({ ...error.body, ...(err.name === "MyError" ? err.resBody : {}) });
+	res.status(error.status)
+		.send({ ...error.body, ...(err.name === "MyError" ? err.resBody : {}) });
 });
 module.exports = app;

@@ -9,8 +9,10 @@ const express = require("express");
 const router = express.Router();
 
 // info 数据库单例
-const prisma = require("../../db/notion.prisma").init();
-const redis = require("../../db/redis").init();
+const prisma = require("../../db/notion.prisma")
+	.init();
+const redis = require("../../db/redis")
+	.init();
 
 // info 通用方法
 const { errcode, MyError } = require("../../../utils/index");
@@ -26,9 +28,10 @@ const {
   */
 router.post("", async function(req, res, next) {
 	try {
-		await create_workspace.validateAsync(req.body).catch(err => {
-			throw new MyError(40001, err);
-		});
+		await create_workspace.validateAsync(req.body)
+			.catch(err => {
+				throw new MyError(40001, err);
+			});
 		const deToken = req.decodeToken;
 		const user_id = deToken.id;
 		const { name, description } = req.body;
@@ -55,7 +58,8 @@ router.post("", async function(req, res, next) {
 		});
 		await redis.del(`${deToken.id}#create_workspace`);
 		const { status, body } = errcode(0, { ...workspace });
-		res.status(status).send(body);
+		res.status(status)
+			.send(body);
 	} catch (error) {
 		next(error);
 	}
@@ -66,9 +70,10 @@ router.post("", async function(req, res, next) {
   */
 router.patch("", async function(req, res, next) {
 	try {
-		await update_workspace.validateAsync(req.body).catch(err => {
-			throw new MyError(40001, err);
-		});
+		await update_workspace.validateAsync(req.body)
+			.catch(err => {
+				throw new MyError(40001, err);
+			});
 		const deToken = req.decodeToken;
 		const user_id = deToken.id;
 		const { name, description, id } = req.body;
@@ -94,13 +99,15 @@ router.patch("", async function(req, res, next) {
 				id,
 				user_id
 			}
-		}).catch(async () => {
-			await redis.del(`${deToken.id}#update_workspace#${id}`);
-			throw new MyError(40005);
-		});
+		})
+			.catch(async () => {
+				await redis.del(`${deToken.id}#update_workspace#${id}`);
+				throw new MyError(40005);
+			});
 		await redis.del(`${deToken.id}#update_workspace#${id}`);
 		const { status, body } = errcode(0, { ...workspace });
-		res.status(status).send(body);
+		res.status(status)
+			.send(body);
 	} catch (error) {
 		next(error);
 	}
@@ -110,9 +117,10 @@ router.patch("", async function(req, res, next) {
   */
 router.delete("", async (req, res, next) => {
 	try {
-		await delete_workspace.validateAsync(req.body).catch(err => {
-			throw new MyError(40001, err);
-		});
+		await delete_workspace.validateAsync(req.body)
+			.catch(err => {
+				throw new MyError(40001, err);
+			});
 		const deToken = req.decodeToken;
 		const user_id = deToken.id;
 		const { id } = req.body;
@@ -128,7 +136,8 @@ router.delete("", async (req, res, next) => {
 		});
 		await redis.del(`${deToken.id}#delete_workspace#${id}`);
 		const { status, body } = errcode(0);
-		res.status(status).send(body);
+		res.status(status)
+			.send(body);
 	} catch (error) {
 		next(error);
 	}
@@ -139,9 +148,10 @@ router.delete("", async (req, res, next) => {
   */
 router.get("", async function(req, res, next) {
 	try {
-		await read_workspace.validateAsync(req.query).catch(err => {
-			throw new MyError(40001, err);
-		});
+		await read_workspace.validateAsync(req.query)
+			.catch(err => {
+				throw new MyError(40001, err);
+			});
 		const deToken = req.decodeToken;
 		const user_id = deToken.id;
 		const { id } = req.query;
@@ -155,7 +165,8 @@ router.get("", async function(req, res, next) {
 			throw new MyError(40006);
 		}
 		const { status, body } = errcode(0);
-		res.status(status).send(body);
+		res.status(status)
+			.send(body);
 	} catch (error) {
 		next(error);
 	}
@@ -186,7 +197,8 @@ router.get("/:user_id", async function(req, res, next) {
 			throw new MyError(40006);
 		}
 		const { status, body } = errcode(0, { count, workspace });
-		res.status(status).send(body);
+		res.status(status)
+			.send(body);
 	} catch (error) {
 		next(error);
 	}

@@ -8,12 +8,17 @@
 const Joi = require("joi");
 
 const update_user_info = Joi.object({
-	name: Joi.string().min(2).max(10).required()
+	name: Joi.string()
+		.min(2)
+		.max(10)
+		.required()
 });
 
 const update_user_password = Joi.object({
 	password: Joi.string()
-		.length(16).alphanum().required()
+		.length(16)
+		.alphanum()
+		.required()
 });
 
 const forgot_user_password = Joi.object({
@@ -21,10 +26,16 @@ const forgot_user_password = Joi.object({
 		.email({
 			// minDomainSegments: 2,
 			tlds: { allow: ["com", "net"] }
-		}).required(),
-	captcha: Joi.string().length(6).alphanum().required(),
+		})
+		.required(),
+	captcha: Joi.string()
+		.length(6)
+		.alphanum()
+		.required(),
 	password: Joi.string()
-		.length(16).alphanum().required()
+		.length(16)
+		.alphanum()
+		.required()
 });
 
 const update_user_email = Joi.object({
@@ -32,8 +43,12 @@ const update_user_email = Joi.object({
 		.email({
 			// minDomainSegments: 2,
 			tlds: { allow: ["com", "net"] }
-		}).required(),
-	captcha: Joi.string().length(6).alphanum().required()
+		})
+		.required(),
+	captcha: Joi.string()
+		.length(6)
+		.alphanum()
+		.required()
 });
 module.exports = {
 	update_user_info,

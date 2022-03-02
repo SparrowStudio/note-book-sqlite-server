@@ -9,8 +9,10 @@ const express = require("express");
 const router = express.Router();
 
 // info 数据库单例
-const prisma = require("../../db/notion.prisma").init();
-const redis = require("../../db/redis").init();
+const prisma = require("../../db/notion.prisma")
+	.init();
+const redis = require("../../db/redis")
+	.init();
 
 // info 通用方法
 const { errcode, MyError, md5Slat } = require("../../../utils/index");
@@ -37,7 +39,8 @@ router.get("", async function(req, res, next) {
 			throw new MyError(41001);
 		}
 		const { status, body } = errcode(0, { ...users });
-		res.status(status).send(body);
+		res.status(status)
+			.send(body);
 	} catch (error) {
 		next(error);
 	}
@@ -49,9 +52,10 @@ router.get("", async function(req, res, next) {
 router.patch("/info", async function(req, res, next) {
 	try {
 		// info 检验参数
-		await update_user_info.validateAsync(req.body).catch(err => {
-			throw new MyError(40001, err);
-		});
+		await update_user_info.validateAsync(req.body)
+			.catch(err => {
+				throw new MyError(40001, err);
+			});
 		const deToken = req.decodeToken;
 		const redisLock = await redis.set(`update_user_info#${deToken.id}`, true, "Ex", 5, "Nx");
 
@@ -79,7 +83,8 @@ router.patch("/info", async function(req, res, next) {
 		}
 		await redis.del(`update_user_info#${deToken.id}`);
 		const { status, body } = errcode(0, { ...users });
-		res.status(status).send(body);
+		res.status(status)
+			.send(body);
 	} catch (error) {
 		console.log("error", error);
 		next(error);
@@ -93,9 +98,10 @@ router.patch("/email", async function(req, res, next) {
 	try {
 		// * 加锁
 		// info 检验参数
-		await update_user_email.validateAsync(req.body).catch(err => {
-			throw new MyError(40001, err);
-		});
+		await update_user_email.validateAsync(req.body)
+			.catch(err => {
+				throw new MyError(40001, err);
+			});
 
 		const { email, captcha } = req.body;
 		const deToken = req.decodeToken;
@@ -126,7 +132,8 @@ router.patch("/email", async function(req, res, next) {
 		await redis.del(`${deToken.id}#refresh_token`);
 		await redis.del(`${deToken.id}#access_token`);
 		const { status, body } = errcode(0);
-		res.status(status).send(body);
+		res.status(status)
+			.send(body);
 	} catch (error) {
 		next(error);
 	}
@@ -137,9 +144,10 @@ router.patch("/email", async function(req, res, next) {
 router.patch("/password", async function(req, res, next) {
 	// info 检验参数
 	try {
-		await update_user_password.validateAsync(req.body).catch(err => {
-			throw new MyError(40001, err);
-		});
+		await update_user_password.validateAsync(req.body)
+			.catch(err => {
+				throw new MyError(40001, err);
+			});
 
 		const { password } = req.body;
 		const deToken = req.decodeToken;
@@ -159,7 +167,8 @@ router.patch("/password", async function(req, res, next) {
 		await redis.del(`${deToken.id}#access_token`);
 		await redis.del(`update_user_password#${deToken.id}`);
 		const { status, body } = errcode(0);
-		res.status(status).send(body);
+		res.status(status)
+			.send(body);
 	} catch (error) {
 		next(error);
 	}

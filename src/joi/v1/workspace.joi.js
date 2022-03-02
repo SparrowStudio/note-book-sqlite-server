@@ -8,24 +8,39 @@
 const Joi = require("joi");
 
 const create_workspace = Joi.object({
-	name: Joi.string().min(2).max(10).required(),
-	description: Joi.string().required(),
-	user_id: Joi.string().uuid().required()
+	name: Joi.string()
+		.min(2)
+		.max(10)
+		.required(),
+	description: Joi.string()
+		.required(),
+	user_id: Joi.string()
+		.uuid()
+		.required()
 });
 
 const update_workspace = Joi.object({
-	id: Joi.string().uuid(),
-	name: Joi.string().min(2).max(10).required(),
-	description: Joi.string().required(),
-	user_id: Joi.string().uuid().required()
+	id: Joi.string()
+		.uuid(),
+	name: Joi.string()
+		.min(2)
+		.max(10)
+		.required(),
+	description: Joi.string()
+		.required(),
+	user_id: Joi.string()
+		.uuid()
+		.required()
 });
 
 const delete_workspace = Joi.object({
-	id: Joi.string().uuid()
+	id: Joi.string()
+		.uuid()
 });
 
 const read_workspace = Joi.object({
-	id: Joi.string().uuid()
+	id: Joi.string()
+		.uuid()
 });
 const read_workspace_list = Joi.object({
 	// page: Joi.string().allow("").default(1).custom((value, helpers) => {
@@ -49,7 +64,8 @@ const read_workspace_list = Joi.object({
 	// 	}
 	// 	return value - 0;
 	// }, "size must be a number")
-	user_id: Joi.string().required()
+	user_id: Joi.string()
+		.required()
 });
 
 module.exports = {

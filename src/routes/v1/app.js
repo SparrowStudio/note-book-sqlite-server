@@ -9,8 +9,10 @@ const express = require("express");
 const router = express.Router();
 
 // info 数据库单例
-const prisma = require("../../db/notion.prisma").init();
-const redis = require("../../db/redis").init();
+const prisma = require("../../db/notion.prisma")
+	.init();
+const redis = require("../../db/redis")
+	.init();
 
 // info 通用方法
 const { errcode, MyError } = require("../../../utils/index");
@@ -52,7 +54,8 @@ router.post("", async (req, res, next) => {
 		// info 删除锁
 		await redis.del(`createApp#${req.body.user_id}`);
 		const { status, body } = errcode(0);
-		res.status(status).send(body);
+		res.status(status)
+			.send(body);
 	} catch (error) {
 		next(error);
 	}
