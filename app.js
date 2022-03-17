@@ -3,13 +3,13 @@
  * @author: bubao
  * @Date: 2021-06-21 08:34:12
  * @LastEditors: bubao
- * @LastEditTime: 2022-02-22 13:09:04
+ * @LastEditTime: 2022-03-17 16:07:22
  */
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-require("./utils/MyError");
+const MyError = require("./utils/MyError");
 const { errcode } = require("./utils/index");
 const authMiddleware = require("./src/middleware/auth");
 const indexRouter = require("./src/routes/index");
@@ -28,13 +28,15 @@ app.all("*", function(req, res, next) {
 	} else { next(); }
 });
 app.use(logger("dev"));
-app.use(express.json());
-app.use(function ErrorHandler(err, req, res, next) {
-	// * json 解析错误
-	const error = errcode(40001);
-	res.status(error.status)
-		.send({ ...error.body, ...(err.name === "MyError" ? err.resBody : {}) });
-});
+app.use(express.json({ 
+	verify(req, res, buf, encoding){
+		try {
+			JSON.parse(buf.toString());
+		} catch (error) {
+			throw new MyError(40001, {err:"JSON_ERROR"});
+		}
+	}
+}));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
@@ -57,8 +59,9 @@ app.use(function ErrorHandler(err, req, res, next) {
 });
 // info 错误捕捉
 app.use(function ErrorHandler(err, req, res, next) {
+	// console.error("sss",err)
 	const error = errcode(err.errcode);
-	console.log(err);
+	// console.log(err);
 	res.status(error.status)
 		.send({ ...error.body, ...(err.name === "MyError" ? err.resBody : {}) });
 });
